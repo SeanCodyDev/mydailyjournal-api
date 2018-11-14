@@ -1,18 +1,18 @@
+'use strict';
+
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 
 //still a work in progress
-const DaySchema = new Schema({
+const daySchema = mongoose.Schema({
     user: {
-    	type: Object,
     	email: String,
     	id: String,
     },
     date: String,
-    grateful: {
-    	type: Array,
-        text: String
-    }
+    grateful: [{
+        text: String,
+        completed: String
+    }]
     	// list: {
     	// 	title: String,
 	    // 	tasks: {
@@ -27,5 +27,30 @@ const DaySchema = new Schema({
     
 });
 
+//schema example
+const restaurantSchema = mongoose.Schema({
+  // the `name` property is String type and required
+  name: {type: String, required: true},
+  borough: {type: String, required: true},
+  cuisine: {type: String, required: true},
+  // the `address` property is an object
+  address: {
+    building: String,
+    // coord will be an array of string values
+    coord: [String],
+    street: String,
+    zipcode: String
+  },
+  // grades will be an array of objects
+  grades: [{
+    // Date type!
+    date: Date,
+    grade: String,
+    score: Number
+  }]
+});
 
-module.exports = mongoose.model('Day', DaySchema);
+// Mongoose will use the first argument we pass to .model() ('day') to determine the collection in our database that corresponds to this model - db.days
+const Day = mongoose.model('Day', daySchema);
+
+module.exports = { Day };
