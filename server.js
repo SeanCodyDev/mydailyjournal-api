@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
 const mongoose = require("mongoose");
+const morgan = require('morgan');
+
 
 // Mongoose internally uses a promise-like object,
 // but its better to make Mongoose use built in es6 promises
@@ -8,7 +10,6 @@ mongoose.Promise = global.Promise;
 
 // mongo db configuration
 const { PORT, DATABASE_URL } = require("./config");
-const { Day } = require("./models/days");
 
 //??? What does this do???
 app.use(express.json());
@@ -27,6 +28,9 @@ app.use(
 //routing
 const dayRouter = require('./controllers/daysRouter');
 app.use ('/days', dayRouter);
+const { router: usersRouter } = require('./controllers/users');
+app.use('/api/users/', usersRouter);
+
 
 
 //insert runServer and closeServer functions here that include the connection to the mongo db
