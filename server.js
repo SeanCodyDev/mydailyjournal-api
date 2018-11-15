@@ -12,6 +12,8 @@ const { Day } = require("./models/days");
 
 //??? What does this do???
 app.use(express.json());
+//logging
+app.use(morgan('common'));
 
 //CORS
 const cors = require('cors');
