@@ -8,7 +8,7 @@ const UserSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    email: {
+    username: {
         type: String,
         required: true
     }
@@ -16,7 +16,7 @@ const UserSchema = mongoose.Schema({
 
 UserSchema.methods.serialize = function() {
     return {
-        email: this.email || '',
+        username: this.username || '',
         id: this._id || ''
     };
 };

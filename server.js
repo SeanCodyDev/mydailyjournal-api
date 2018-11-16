@@ -1,8 +1,14 @@
+'use strict'
+require('dotenv').config();
 const express = require('express');
-const app = express();
 const mongoose = require("mongoose");
 const morgan = require('morgan');
+const passport = require('passport');
 
+//routers
+const { router: dayRouter } = require('./controllers/daysRouter');
+const { router: usersRouter } = require('./controllers/users');
+const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
 
 // Mongoose internally uses a promise-like object,
 // but its better to make Mongoose use built in es6 promises
@@ -11,8 +17,11 @@ mongoose.Promise = global.Promise;
 // mongo db configuration
 const { PORT, DATABASE_URL } = require("./config");
 
+const app = express();
+
 //??? What does this do???
 app.use(express.json());
+
 //logging
 app.use(morgan('common'));
 
@@ -25,11 +34,23 @@ app.use(
     })
 )
 
-//routing
-const dayRouter = require('./controllers/daysRouter');
-app.use ('/days', dayRouter);
-const { router: usersRouter } = require('./controllers/users');
-app.use('/api/users/', usersRouter);
+passport.use(localStrategy);
+passport.use(jwtStrategy);
+
+// app.use ('/days', dayRouter);
+app.use('/api/users', usersRouter);
+app.use('/api/auth', authRouter);
+
+const jwtAuth = passport.authenticate('jwt', { session: false });
+
+// A protected endpoint which needs a valid JWT to access it
+app.get('/api/protected', jwtAuth, (req, res) => {
+  return res.json({
+    data: 'rosebud'
+  });
+});
+
+
 
 
 

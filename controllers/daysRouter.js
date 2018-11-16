@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
+const passport = require('passport');
+
 
 // Mongoose internally uses a promise-like object,
 // but its better to make Mongoose use built in es6 promises
@@ -9,6 +11,10 @@ mongoose.Promise = global.Promise;
 // mongo db configuration
 const { PORT, DATABASE_URL } = require("../config");
 const { Day } = require("../models/days");
+
+const { router: authRouter} = require('../auth');
+const jwtAuth = passport.authenticate('jwt', { session: false });
+passport.use(jwtAuth);
 
 // GET requests to /days
 router.get('/', (req, res) => {
@@ -65,6 +71,13 @@ router.put('/:id', (req, res) => {
       console.error(err);
       res.status(500).json({ message: "Internal server error" });
     });
+});
+
+// A protected endpoint which needs a valid JWT to access it
+router.get('/protected', jwtAuth, (req, res) => {
+  return res.json({
+    data: 'rosebud'
+  });
 });
 
 // DELETE - No need for this at MVP stage
