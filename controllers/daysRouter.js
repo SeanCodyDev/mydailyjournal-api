@@ -17,8 +17,10 @@ const jwtAuth = passport.authenticate('jwt', { session: false });
 passport.use(jwtAuth);
 
 // GET requests to /days
-router.get('/', (req, res) => {
-  Day.find()
+router.get('/', jwtAuth, (req, res) => {
+  console.log("req.user.id", req.user.id);
+  Day
+    .find({"user.id": req.user.id})
     // we're limiting because restaurants db has > 25,000
     // documents, and that's too much to process/return
     .limit(10)
@@ -37,9 +39,10 @@ router.get('/', (req, res) => {
 // POST - Create a new Day
 // No validation needed?
 // IMPROVEMENT - But if nothing is sent in the one of the lists, don't save that in the document?
-router.post('/', (req, res) => {
+router.post('/', jwtAuth, (req, res) => {
+  console.log("req.user", req.user)
   Day.create({
-    user: req.body.user,
+    user: req.user,
     date: req.body.date,
     grateful: req.body.grateful,
     greatness: req.body.greatness,
@@ -55,7 +58,7 @@ router.post('/', (req, res) => {
 // PUT - Update 
 // No validation needed?
 // IMPROVEMENT - But if nothing is sent in the one of the lists, don't save that in the document?
-router.put('/:id', (req, res) => {
+router.put('/:id', jwtAuth, (req, res) => {
 	Day.update(
 		{"_id": req.params.id},
 		{
@@ -73,13 +76,7 @@ router.put('/:id', (req, res) => {
     });
 });
 
-// A protected endpoint which needs a valid JWT to access it
-router.get('/protected', jwtAuth, (req, res) => {
-  return res.json({
-    data: 'rosebud'
-  });
-});
 
 // DELETE - No need for this at MVP stage
 
-module.exports = router;
+module.exports = {router};

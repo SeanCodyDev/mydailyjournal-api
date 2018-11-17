@@ -5,8 +5,8 @@ const mongoose = require('mongoose');
 //still a work in progress
 const daySchema = mongoose.Schema({
     user: {
-    	email: String,
-    	id: String,
+    	username: String,
+      id: String
     },
     date: String,
     grateful: [{

@@ -6,7 +6,7 @@ const morgan = require('morgan');
 const passport = require('passport');
 
 //routers
-const { router: dayRouter } = require('./controllers/daysRouter');
+const { router: daysRouter } = require('./controllers/daysRouter');
 const { router: usersRouter } = require('./controllers/users');
 const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
 
@@ -37,7 +37,7 @@ app.use(
 passport.use(localStrategy);
 passport.use(jwtStrategy);
 
-// app.use ('/days', dayRouter);
+app.use('/days', daysRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/auth', authRouter);
 
@@ -46,7 +46,8 @@ const jwtAuth = passport.authenticate('jwt', { session: false });
 // A protected endpoint which needs a valid JWT to access it
 app.get('/api/protected', jwtAuth, (req, res) => {
   return res.json({
-    data: 'rosebud'
+    data: 'rosebud',
+    user: req.user
   });
 });
 
