@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const passport = require('passport');
+const moment = require('moment');
 
 
 // Mongoose internally uses a promise-like object,
@@ -40,13 +41,14 @@ router.get('/', jwtAuth, (req, res) => {
 router.post('/', jwtAuth, (req, res) => {
   console.log("req.user", req.user)
   console.log('req.body', req.body)
+  let currentDate = moment().format('MMM Do YYYY');
   //query for the day... unique day _id
   let query = {'_id': (req.body._id || new mongoose.mongo.ObjectID())};
   console.log('query', query);
   let updates = {
     $set: {
       user: req.user,
-      date: req.body.date,
+      date: currentDate,
       grateful: req.body.grateful,
       greatness: req.body.greatness,
       affirmation: req.body.affirmation
@@ -64,7 +66,6 @@ router.post('/', jwtAuth, (req, res) => {
     });
 
 });
-
 
 
 // DELETE - No need for this at MVP stage
