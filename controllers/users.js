@@ -15,6 +15,12 @@ mongoose.Promise = global.Promise;
 // mongo db configuration
 const {DATABASE_URL } = require("../config");
 
+router.get('/api/users/test', (req, res) => {
+  return res.json({
+    data: 'rosebud'
+  });
+});
+
 //post to create a new User
 router.post('/', jsonParser, (req, res) => {
   const requiredFields = ['username', 'password'];

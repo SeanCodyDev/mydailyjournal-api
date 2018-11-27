@@ -67,6 +67,24 @@ router.post('/', jwtAuth, (req, res) => {
 
 });
 
+router.post('/getEntries', jwtAuth, (req, res) => {
+
+  Day
+    .find({"user.id": req.user.id, "date": req.body.date})
+    // we're limiting because restaurants db has > 25,000
+    // documents, and that's too much to process/return
+    .limit(10)
+    // success callback: for each day we got back, we'll
+    // models.js in order to only expose the data we want the API return.    
+    .then(days => {
+      res.json(days);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ message: "Internal server error" });
+    });
+})
+
 
 // DELETE - No need for this at MVP stage
 
